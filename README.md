@@ -10,11 +10,13 @@ This repo is mantained by group 100 of the course FYS3150/4150 at UiO.
 - [Requirements](#requirements)
 - [Compiling & Linking](#compiling--linking)
 - [Aknowledgements](#aknowledgements)
+- [License](#license)
 
 ## Requirements
 
 In order to be able to run everything succesfully you will need:
 * A `C++11` compiler
+* `armadillo`, an efficient linear algebra library
 
 ## Compiling & Linking
 
@@ -43,14 +45,34 @@ You can then run the executable with
 ```
 
 ## Aknowledgements
+<button  style="border: transparent; background-color: transparent;">
+  <a href=https://github.com/CloriCaprile>Clori</a>
+  <div float=left>
+    <img src="https://avatars.githubusercontent.com/u/51904841?v=4" margin=0 width=50> 
+  </div>
+</button>
+<button style="border: transparent; background-color: transparent;">
+  <a href=https://github.com/diegoscantam>Diego</a>
+  <div float=center>
+    <img src="https://avatars.githubusercontent.com/u/112166702?v=" width=50> 
+  </div>
+</button>
+<button style="border: transparent; background-color: transparent;">
+  <a href=https://github.com/ngrlcu>Luca</a>
+  <div>
+    <img src="https://avatars.githubusercontent.com/u/79975678?s=400&u=6770b5f0354ed29bf9a54e7f27a8250bb812c279&v=4" width=50> 
+  </div>
+</button>
+<button style="border: transparent; background-color: transparent;">
+  <a href=https://github.com/martapisci>Marta</a>
+  <div>
+    <img src="https://avatars.githubusercontent.com/u/112163092?v=4" width=50>
+  </div>
+</button>
 
-[Clori](https://github.com/CloriCaprile)
 
-[Diego](https://github.com/diegoscantam)
 
-[Luca](https://github.com/ngrlcu)
 
-[Marta](https://github.com/martapisci)
 
 ## License
 
