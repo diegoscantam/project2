@@ -1,6 +1,14 @@
-#include "useful.hpp"
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iomanip>
+#include <math.h> 
+#include <cmath>
 #include <armadillo>
+#include "useful.hpp"
+
 
 
 
@@ -102,4 +110,27 @@ arma::mat create_tridiagonal(int n, double a, double d, double e)
   A(n-1, n-1) = d;
   A(n-1, n-2) = a;
   return A;
+}
+
+
+// Determine the the max off-diagonal element of a symmetric matrix A
+// - Saves the matrix element indicies to k and l 
+// - Returns absolute value of A(k,l) as the function return value
+double max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
+  double max = 0, x=max;
+  int N = A.n_rows;
+  k=0;
+  l=1;
+  for(int q = 2; q <= N*(N-1); q++){
+    if( (q-1)%N +1 > (q-1)/N  +1  ){
+      x= A((q-1)/N , (q-1)% N );
+      if( std::abs(x) > abs(max) ){
+        k = (q-1)/N;
+        l = (q-1)%N;
+        max = x;
+      }   
+    }
+  }
+
+  return max;
 }

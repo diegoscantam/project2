@@ -30,4 +30,10 @@ std::vector<double> specific_algo(std::vector<double>& g);
 // - all n-1 elements on the superdiagonal have value e
 arma::mat create_tridiagonal(int n, double a, double d, double e);
 
+
+// Determine the the max off-diagonal element of a symmetric matrix A
+// - Saves the matrix element indicies to k and l 
+// - Returns absolute value of A(k,l) as the function return value
+double max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
+
 #endif  // end of include guard __useful_hpp__
