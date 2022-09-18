@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <math.h> 
 #include <cmath>
+#include <cassert>
 #include <armadillo>
 #include "useful.hpp"
 
@@ -113,12 +114,16 @@ arma::mat create_tridiagonal(int n, double a, double d, double e)
 }
 
 
-// Determine the the max off-diagonal element of a symmetric matrix A
+// Determine the max off-diagonal element of a symmetric matrix A with fast algorithm
 // - Saves the matrix element indicies to k and l 
 // - Returns absolute value of A(k,l) as the function return value
-double max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
+double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
   double max = 0, x=max;
   int N = A.n_rows;
+
+  //assert(A.is_square());
+  //assert(N > 1);
+
   k=0;
   l=1;
   for(int q = 2; q <= N*(N-1); q++){
@@ -133,4 +138,34 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
   }
 
   return max;
+}
+
+// A function that finds the max off-diag element of a symmetric matrix A.
+// - The matrix indices of the max element are returned by writing to the  
+//   int references k and l (row and column, respectively)
+// - The value of the max element A(k,l) is returned as the function
+//   return value
+double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
+{
+  int N = A.n_rows;
+
+  //assert(A.is_square());
+  //assert(N > 1);
+
+  k=0;
+  l=1;
+  auto maxval = A(k, l);
+
+  for (int i=0; i < N; i++){
+    for (int j = i + 1; j < N; j++){
+      auto A_ij = std::abs(A(i,j));
+      if(A_ij > maxval){
+        maxval = A_ij;
+        k = i;
+        l = j;
+      }
+    }
+  }
+
+  return maxval;
 }
