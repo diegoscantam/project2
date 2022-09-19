@@ -8,7 +8,8 @@ This repo is mantained by group 100 of the course FYS3150/4150 at UiO.
 ## Table of contents
 
 - [Requirements](#requirements)
-- [Compiling & Linking](#compiling--linking)
+- [Building](#building)
+- [Tests](#tests)
 - [Aknowledgements](#aknowledgements)
 - [License](#license)
 
@@ -17,8 +18,9 @@ This repo is mantained by group 100 of the course FYS3150/4150 at UiO.
 In order to be able to run everything succesfully you will need:
 * A `C++11` compiler
 * `armadillo`, an efficient linear algebra library
+* `cmake`, for building (optional, recommended)
 
-## Compiling & Linking
+## Building
 
 Clone this repo with
 
@@ -32,18 +34,42 @@ or
 git clone git@github.com:diegoscantam/project2.git
 ```
 
-now just compile and link, if you use `g++` you can simply copy and paste the following
+### g++
+
+You can compile and link with `g++`.
 
 ```bash
 g++ problem<i>.cpp src/useful.cpp -I include -larmadillo -o prob<i>
 ```
-where instead of `<i>` you can insert the problem number of your interest.
+where instead of `<i>` you can insert the problem number of your interest. You might need to add the  `-std=gnu++11` if you are a Mac user.
 You can then run the executable with
 
 ```bash
 ./prob<i>
 ```
 
+### CMAKE
+
+Alternatively you can build everything with `cmake`. First you need to create a `build/` directory and move into it
+```bash
+mkdir build; cd build
+```
+Now you just need to run
+```bash
+cmake ..
+```
+If it outputs correctly you should be able to build the project by runnning
+```bash
+make
+```
+from the same `build/` directory. In this way everything is well organized into specific folders: in the `build/` directory you can find all executables; in the  `include/` all the header files; and in the `test/` directory are stored the tests for most of the functions implemented.
+
+## Tests
+CMake provides an easy command for code testing, i.e. from `build/` you can run
+```bash
+ctest
+```
+In this way all tests are run.
 ## Aknowledgements
 <button  style="border: transparent; background-color: transparent;">
   <a href=https://github.com/CloriCaprile>Clori</a>
