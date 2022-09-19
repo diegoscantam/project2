@@ -10,8 +10,8 @@
 #include <cassert>
 #include "useful.hpp"
 
-// function useful for asserting if numbers are equal
-template <typename T> bool are_equal(const T a, const T b, const T epsilon = 1e-10) {
+// Return a bool  for asserting if numbers are equal
+template <typename T> bool are_equal(const T a, const T b, const T epsilon = 1e-8) {
 	return std::abs(a-b) < epsilon;
 }
 

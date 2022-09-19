@@ -10,9 +10,6 @@
 #include <armadillo>
 #include "useful.hpp"
 
-
-
-
 // return a string in scientific notation
 std::string scientific_format(double d, const int& width, const int& prec){
 
@@ -175,7 +172,7 @@ double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
     }
   }
 
-  return max;
+  return std::abs(max);
 }
 
 // Determine the max off-diagonal element of a symmetric matrix A with fast algorithm given access to matrix pointer
@@ -183,23 +180,24 @@ double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
 // - Saves the matrix element indicies to k and l 
 // - Returns absolute value of A(k,l) as the function return value
 double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
-  double max = 0, x=max;
 
-  k=0;
-  l=1;
+  k=0; //row
+  l=1; //col
+  double max = *(a+l*N+k);
 
-for (int i=2; i< N*N; i++){
-  if( (i-1)%N +1 < (i-1)/N  +1  ){
-    x = std::abs(*(a+i-1));
-    if( x > max ){
-      k = (i-1)%N;
-      l = (i-1)/N;
-      max = x;
-      }   
+  for (int q=2; q < N*N; q++){
+    double i = q%N, j = q/N; // arma::mat is col-ordered
+    if( i < j  ){
+      double x = *(a+q);
+      if( x*x > max*max ){
+        k = i;
+        l = j;
+        max = x;
+      }
     }
   }
 
-  return max;
+  return std::abs(max);
 }
 
 // A function that finds the max off-diag element of a symmetric matrix A.
@@ -220,8 +218,8 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 
   for (int i=0; i < N; i++){
     for (int j = i + 1; j < N; j++){
-      auto A_ij = std::abs(A(i,j));
-      if(A_ij > maxval){
+      auto A_ij = A(i,j);
+      if(A_ij*A_ij > maxval*maxval){
         maxval = A_ij;
         k = i;
         l = j;
@@ -229,5 +227,58 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
     }
   }
 
-  return maxval;
+  return std::abs(maxval);
 }
+
+// Performs a single Jacobi rotation, to "rotate away"
+// the off-diagonal element at A(k,l).
+// - Assumes symmetric matrix, so we only consider k < l
+// - Modifies the input matrices A and R
+void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
+
+  int N = A.n_rows;
+
+  // save in mem the matrix elements
+  double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l);
+
+  // Determine t, c, s of Jacobi rotation
+  double tau  = (a_ll - a_kk)/(2*a_kl);
+  double t = 1;
+  if  (tau > 0)
+    t = 1/(tau+std::sqrt(1+tau*tau));
+  else
+    t = -1/(-tau+std::sqrt(1+tau*tau));
+
+  double c = 1/std::sqrt(1+t*t), s = c*t;
+
+  // Update A elements and R  elements
+  A(k, k) = a_kk*c*c - 2.*a_kl*c*s + a_ll*s*s;
+  A(l, l) = a_ll*c*c + 2.*a_kl*c*s + a_kk*s*s;
+  A(k, l) = 0;
+  A(l, k) = A(k, l);
+  for (int i = 0; i < N; i++){
+
+    double a_ik = A(i, k);
+    A(i, k) = a_ik*c - A(i, l)*s;
+    A(k, i) = A(i, k);
+    A(i, l) = A(i, l)*c + a_ik*s;
+
+    double r_ik = R(i, k);
+    R(i, k) =r_ik*c - R(i, l)*s;
+    R(i, l) = R(i, l)*c + r_ik*s;
+  }
+
+}
+
+// Jacobi method eigensolver:
+// - Runs jacobo_rotate until max off-diagonal element < eps
+// - Writes the eigenvalues as entries in the vector "eigenvalues"
+// - Writes the eigenvectors as columns in the matrix "eigenvectors"
+//   (The returned eigenvalues and eigenvectors are sorted using arma::sort_index)
+// - Stops if it the number of iterations reaches "maxiter"
+// - Writes the number of iterations to the integer "iterations"
+// - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
+void jacobi_eigensolver(const arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, 
+                        const int maxiter, int& iterations, bool& converged){
+
+                        }
