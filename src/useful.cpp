@@ -87,6 +87,36 @@ std::vector<double> specific_algo(std::vector<double>& g){
     return v;
 
 }
+
+// Create tridiagonal matrix from vectors.
+// - lower diagonal: vector a, lenght n-1
+// - main diagonal:  vector d, lenght n
+// - upper diagonal: vector e, lenght n-1
+arma::mat create_tridiagonal(const arma::vec& a, const arma::vec& d, const arma::vec& e)
+{
+  int n = d.n_elem;
+
+  // Start from identity matrix
+  arma::mat A = arma::mat(n, n, arma::fill::eye);
+
+  // Fill first row (row index 0)
+  A(0,0) = d(0);
+  A(0,1) = e(0);
+
+  for(int i=1; i<=n-2; i++){
+      A(i, i-1) = a(i-1);
+      A(i, i) = d(i);
+      A(i, i+1) = e(i);
+  }
+  // Loop that fills rows 2 to n-1 (row indices 1 to n-2)
+  
+  // Fill last row (row index n-1)
+
+  A(n-1, n-1) = d(n-1);
+  A(n-1, n-2) = a(n-2);
+  return A;
+}
+
 // Create a tridiagonal matrix tridiag(a,d,e) of size n*n, 
 // from scalar input a, d, and e. That is, create a matrix where
 // - all n-1 elements on the subdiagonal have value a
@@ -102,15 +132,23 @@ arma::mat create_tridiagonal(int n, double a, double d, double e)
   A(0,1) = e;
 
   // Loop that fills rows 2 to n-1 (row indices 1 to n-2)
-    for(int i=1; i<=n-2; i++){
-        A(i, i-1) = a;
-        A(i, i) = d;
-        A(i, i+1) = e;
-    }
+  for(int i=1; i<=n-2; i++){
+      A(i, i-1) = a;
+      A(i, i) = d;
+      A(i, i+1) = e;
+  }
   // Fill last row (row index n-1)
   A(n-1, n-1) = d;
   A(n-1, n-2) = a;
   return A;
+}
+
+// Create a symmetric tridiagonal matrix tridiag(a,d,a) of size n*n
+// from scalar input a and d.
+arma::mat create_symmetric_tridiagonal(int n, double a, double d)
+{
+  // Call create_tridiagonal and return the result
+  return create_tridiagonal(n, a, d, a);
 }
 
 
@@ -128,8 +166,8 @@ double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
   l=1;
   for(int q = 2; q <= N*(N-1); q++){
     if( (q-1)%N +1 > (q-1)/N  +1  ){
-      x= A((q-1)/N , (q-1)% N );
-      if( std::abs(x) > abs(max) ){
+      x = std::abs(A((q-1)/N , (q-1)% N ));
+      if( x > max ){
         k = (q-1)/N;
         l = (q-1)%N;
         max = x;

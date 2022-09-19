@@ -30,6 +30,15 @@ std::vector<double> specific_algo(std::vector<double>& g);
 // - all n-1 elements on the superdiagonal have value e
 arma::mat create_tridiagonal(int n, double a, double d, double e);
 
+// Create tridiagonal matrix from vectors.
+// - lower diagonal: vector a, lenght n-1
+// - main diagonal:  vector d, lenght n
+// - upper diagonal: vector e, lenght n-1
+arma::mat create_tridiagonal(const arma::vec& a, const arma::vec& d, const arma::vec& e);
+
+// Create a symmetric tridiagonal matrix tridiag(a,d,a) of size n*n
+// from scalar input a and d.
+arma::mat create_symmetric_tridiagonal(int n, double a, double d);
 
 // Determine the the max off-diagonal element of a symmetric matrix A
 // - Saves the matrix element indicies to k and l 
