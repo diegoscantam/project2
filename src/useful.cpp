@@ -178,6 +178,30 @@ double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
   return max;
 }
 
+// Determine the max off-diagonal element of a symmetric matrix A with fast algorithm given access to matrix pointer
+// double *a = arma::mat A.memptr();
+// - Saves the matrix element indicies to k and l 
+// - Returns absolute value of A(k,l) as the function return value
+double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
+  double max = 0, x=max;
+
+  k=0;
+  l=1;
+
+for (int i=2; i< N*N; i++){
+  if( (i-1)%N +1 < (i-1)/N  +1  ){
+    x = std::abs(*(a+i-1));
+    if( x > max ){
+      k = (i-1)%N;
+      l = (i-1)/N;
+      max = x;
+      }   
+    }
+  }
+
+  return max;
+}
+
 // A function that finds the max off-diag element of a symmetric matrix A.
 // - The matrix indices of the max element are returned by writing to the  
 //   int references k and l (row and column, respectively)

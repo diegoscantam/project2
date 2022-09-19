@@ -86,6 +86,7 @@ void test_max_offdiag_symmetric(){
 void test_fast_max_offdiag_symmetric(){
     int N = 4, k, l;
     arma::mat A = arma::mat(N,N).eye();
+    double *a = A.memptr();
 
     // fill test matrix
     A(0,N-1) = 0.5;
@@ -100,6 +101,15 @@ void test_fast_max_offdiag_symmetric(){
     assert(are_equal(max_off, 0.7));
     assert(k == 1);
     assert(l == N-2);
+
+    // reset and test the overloading of the same function
+    max_off = 0;
+    max_off = fast_max_offdiag_symmetric(N, a, k, l);
+
+    assert(are_equal(max_off, 0.7));
+    assert(k == 1);
+    assert(l == N-2);
+
 }
 
 int main(){
@@ -109,4 +119,6 @@ int main(){
     test_create_tridiagonal_symm();
     test_max_offdiag_symmetric();
     test_fast_max_offdiag_symmetric();
+
+    return 0;
 }

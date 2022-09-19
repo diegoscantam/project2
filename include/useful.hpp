@@ -45,5 +45,6 @@ arma::mat create_symmetric_tridiagonal(int n, double a, double d);
 // - Returns absolute value of A(k,l) as the function return value
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
 double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
+double fast_max_offdiag_symmetric(const int N, double* A, int& k, int& l);
 
 #endif  // end of include guard __useful_hpp__

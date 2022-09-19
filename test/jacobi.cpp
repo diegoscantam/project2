@@ -11,4 +11,6 @@
 
 int main(){
     // tests for jacobi algorithm
+
+    return 0;
 }
