@@ -7,6 +7,7 @@
 #include <math.h> 
 #include <cmath>
 #include <armadillo>
+#include <cassert>
 #include "useful.hpp"
 
 // function useful for asserting if numbers are equal
