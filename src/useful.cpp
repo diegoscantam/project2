@@ -307,11 +307,11 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
         }
     }
     
-    std::cout<<"\n"<<iterations;
+    std::cout<<"number of iterations \n"<<iterations;
     
     for (int i= 0; i<N; i++){
         eigenvalues(i)=A(i,i);
-        std::cout<< "\n"<<eigenvalues(i)<<std::endl;
+        std::cout<< "eigenvalues \n"<<eigenvalues(i)<<std::endl;
     }
     
     for (int i=0; i < N; i++){
