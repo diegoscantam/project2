@@ -47,6 +47,5 @@ int main(){
     //assert(are_close(eigenvalues(0),1.));
     //assert(are_close(eigenvalues(1), -1.));
     
-
     return 0;
 }
