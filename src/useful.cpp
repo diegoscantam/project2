@@ -244,13 +244,13 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 
   // Determine t, c, s of Jacobi rotation
   double tau  = (a_ll - a_kk)/(2*a_kl);
-  double t = 1;
+  double t;
   if  (tau > 0)
-    t = 1/(tau+std::sqrt(1+tau*tau));
+    t = 1./(tau+std::sqrt(1+tau*tau));
   else
-    t = -1/(-tau+std::sqrt(1+tau*tau));
+    t = -1./(-tau+std::sqrt(1+tau*tau));
 
-  double c = 1/std::sqrt(1+t*t), s = c*t;
+  double c = 1./std::sqrt(1+t*t), s = c*t;
 
   // Update A elements and R  elements
   A(k, k) = a_kk*c*c - 2.*a_kl*c*s + a_ll*s*s;
@@ -258,7 +258,9 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
   A(k, l) = 0;
   A(l, k) = A(k, l);
   for (int i = 0; i < N; i++){
-
+    if (i == k || i == l){
+      continue;
+    }
     double a_ik = A(i, k);
     A(i, k) = a_ik*c - A(i, l)*s;
     A(k, i) = A(i, k);
@@ -279,7 +281,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 // - Stops if it the number of iterations reaches "maxiter"
 // - Writes the number of iterations to the integer "iterations"
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
-void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const int maxiter, int& iterations, bool& converged){
+void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const long int maxiter, long int& iterations, bool& converged){
     iterations = 0;
 
     //initialize matrix R1
@@ -291,17 +293,18 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
     converged = true;
     while (max > eps){
         jacobi_rotate(A,R,k,l);
-        max=max_offdiag_symmetric(A,k,l);
-        iterations=iterations+1;
+        max = max_offdiag_symmetric(A,k,l);
+        iterations++;
         
         if (iterations > maxiter){
             converged = false;
             break;
         }
     }
-    
     eigenvalues = A.diag();
-    eigenvectors = R;
+    arma::uvec sidx = sort_index(eigenvalues);
+    eigenvalues = eigenvalues(sidx);
+    eigenvectors = R.cols(sidx);
 
 }
 
