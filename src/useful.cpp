@@ -281,7 +281,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
 void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const int maxiter, int& iterations, bool& converged){
     
-    
+    //
     //initialize matrix R1
     int N = A.n_rows;
     arma::mat R=arma::eye(N,N);
