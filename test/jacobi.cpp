@@ -39,9 +39,10 @@ int main(){
     arma::mat eigenvectors=arma::mat(3,3);
     
     
-
+    int maxiter = 100, iterations=0;
+    bool converged=false;
     
-    jacobi_eigensolver(A,eps,eigenvalues, eigenvectors);
+    jacobi_eigensolver(A,eps,eigenvalues, eigenvectors, maxiter, iterations, converged);
     
     //assert(are_close(eigenvalues(0),1.));
     //assert(are_close(eigenvalues(1), -1.));
