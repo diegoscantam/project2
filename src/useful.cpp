@@ -302,6 +302,7 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
     
     eigenvalues = A.diag();
     eigenvectors = R;
+
 }
 
 
