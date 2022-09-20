@@ -280,19 +280,15 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 // - Writes the number of iterations to the integer "iterations"
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
 void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const int maxiter, int& iterations, bool& converged){
-    
-    //
+    iterations = 0;
+
     //initialize matrix R1
     int N = A.n_rows;
-    arma::mat R=arma::eye(N,N);
+    arma::mat R = arma::eye(N,N);
     int k,l;
-    //int& iterations=0;
-    //const int maxiter=1.e5;
-    //bool& converged;
+
     double max = max_offdiag_symmetric(A,k,l);
-    
-    
-    
+    converged = true;
     while (max > eps){
         jacobi_rotate(A,R,k,l);
         max=max_offdiag_symmetric(A,k,l);
@@ -302,23 +298,10 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
             converged = false;
             break;
         }
-        else {
-            converged = true;
-        }
     }
     
-    std::cout<<"\n"<<iterations;
-    
-    for (int i= 0; i<N; i++){
-        eigenvalues(i)=A(i,i);
-        std::cout<< "\n"<<eigenvalues(i)<<std::endl;
-    }
-    
-    for (int i=0; i < N; i++){
-        for(int j=0; j<N; j++){
-            eigenvectors(i,j)=R(i,j);
-        }
-    }
+    eigenvalues = A.diag();
+    eigenvectors = R;
 }
 
 

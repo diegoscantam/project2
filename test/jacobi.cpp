@@ -25,27 +25,29 @@ void test_jacobi_rotate(){
     assert(are_equal(A(1, 1), 0.));
 }
 
-int main(){
-
-    test_jacobi_rotate();
-  
-    
+void test_jacobi_eigensolver(){
     arma::mat A(2, 2, arma::fill::zeros);
     A(1, 0) = 1.;
     A(0, 1) = 1.;
     
-    double eps=1.0e-8;
+    double eps = 1.0e-8;
     arma::vec eigenvalues=arma::vec(3);
     arma::mat eigenvectors=arma::mat(3,3);
     
     
-    int maxiter = 100, iterations=0;
-    bool converged=false;
+    int maxiter = 100, iterations;
+    bool converged;
     
-    jacobi_eigensolver(A,eps,eigenvalues, eigenvectors, maxiter, iterations, converged);
-    
-    //assert(are_close(eigenvalues(0),1.));
-    //assert(are_close(eigenvalues(1), -1.));
+    jacobi_eigensolver(A, eps,eigenvalues, eigenvectors, maxiter, iterations, converged);
+
+    assert(are_equal(eigenvalues(0), 1., eps));
+    assert(are_equal(eigenvalues(1), -1., eps));
+}
+
+int main(){
+
+    test_jacobi_rotate();
+    test_jacobi_eigensolver();
     
     return 0;
 }
