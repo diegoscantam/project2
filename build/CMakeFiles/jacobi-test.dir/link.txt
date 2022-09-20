@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++  -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names "CMakeFiles/jacobi-test.dir/test/jacobi.cpp.o" -o jacobi-test  libtrace.a /opt/homebrew/lib/libarmadillo.dylib 

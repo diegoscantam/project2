@@ -12,6 +12,8 @@
 
 
 #define PI 3.14159265359
+
+
 int main(){
     // declare variables
     int N = 6, n = 7;
@@ -37,10 +39,11 @@ int main(){
     arma::vec lambda(N);
     arma::vec tf = arma::vec(N).fill(0.);
     arma::mat v(N,N);
-    for(int i=0 ; i<=N-1; i++){
+    for(int i=0 ; i<=N-1; i++)
+            {
             lambda(i)= d + 2*a*cos( (i+1)*PI/(N + 1));
             for(int k=0; k<=N-1; k++){
-                v(k,i)=sin( (k+1)*(i+1)*PI/(N+1));
+                v(k,i)=sin((k+1)*(i+1)*PI/(N+1));
             }
     }
 

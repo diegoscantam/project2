@@ -1,0 +1,9 @@
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/trace.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/chrono.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/p2.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/p3.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/tridiag-test.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/jacobi-test.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/test.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/edit_cache.dir
+/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/CMakeFiles/rebuild_cache.dir

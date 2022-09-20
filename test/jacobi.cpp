@@ -28,7 +28,24 @@ void test_jacobi_rotate(){
 int main(){
 
     test_jacobi_rotate();
+  
+    
+    arma::mat A(2, 2, arma::fill::zeros);
+    A(1, 0) = 1.;
+    A(0, 1) = 1.;
+    
+    double eps=1.0e-8;
+    arma::vec eigenvalues=arma::vec(3);
+    arma::mat eigenvectors=arma::mat(3,3);
+    
+    
 
+    
+    jacobi_eigensolver(A,eps,eigenvalues, eigenvectors);
+    
+    //assert(are_close(eigenvalues(0),1.));
+    //assert(are_close(eigenvalues(1), -1.));
+    
 
     return 0;
 }

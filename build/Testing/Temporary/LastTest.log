@@ -1,0 +1,38 @@
+Start testing: Sep 19 19:17 CEST
+----------------------------------------------------------
+1/2 Testing: tridiag-test
+1/2 Test: tridiag-test
+Command: "/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/tridiag-test"
+Directory: /Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build
+"tridiag-test" start time: Sep 19 19:17 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"tridiag-test" end time: Sep 19 19:17 CEST
+"tridiag-test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: jacobi-test
+2/2 Test: jacobi-test
+Command: "/Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build/jacobi-test"
+Directory: /Users/martapiscitelli/Desktop/Marta/uni/V Semestre/FYS 3150/project2/build
+"jacobi-test" start time: Sep 19 19:17 CEST
+Output:
+----------------------------------------------------------
+
+1
+
+-1
+1-1
+<end of output>
+Test time =   0.27 sec
+----------------------------------------------------------
+Test Passed.
+"jacobi-test" end time: Sep 19 19:17 CEST
+"jacobi-test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 19 19:17 CEST
