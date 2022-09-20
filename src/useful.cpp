@@ -10,6 +10,10 @@
 #include <armadillo>
 #include "useful.hpp"
 
+template <typename T> bool are_equal(const T a, const T b, const T epsilon = 1e-8) {
+	return std::abs(a-b) < epsilon;
+}
+
 // return a string in scientific notation
 std::string scientific_format(double d, const int& width, const int& prec){
 
@@ -237,20 +241,18 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 
   int N = A.n_rows;
-    
 
   // save in mem the matrix elements
-  double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l);
+  double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l), c, s;
 
   // Determine t, c, s of Jacobi rotation
-  double tau  = (a_ll - a_kk)/(2*a_kl);
-  double t;
-  if  (tau > 0)
+  double tau  = (a_ll - a_kk)/(2*a_kl), t;
+  if  (tau >= 0)
     t = 1./(tau+std::sqrt(1+tau*tau));
   else
     t = -1./(-tau+std::sqrt(1+tau*tau));
-
-  double c = 1./std::sqrt(1+t*t), s = c*t;
+  c = 1./std::sqrt(1+t*t);
+  s = c*t;
 
   // Update A elements and R  elements
   A(k, k) = a_kk*c*c - 2.*a_kl*c*s + a_ll*s*s;
@@ -258,6 +260,9 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
   A(k, l) = 0;
   A(l, k) = A(k, l);
   for (int i = 0; i < N; i++){
+    double r_ik = R(i, k);
+    R(i, k) =r_ik*c - R(i, l)*s;
+    R(i, l) = R(i, l)*c + r_ik*s;
     if (i == k || i == l){
       continue;
     }
@@ -265,10 +270,6 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
     A(i, k) = a_ik*c - A(i, l)*s;
     A(k, i) = A(i, k);
     A(i, l) = A(i, l)*c + a_ik*s;
-
-    double r_ik = R(i, k);
-    R(i, k) =r_ik*c - R(i, l)*s;
-    R(i, l) = R(i, l)*c + r_ik*s;
   }
 
 }
@@ -300,6 +301,7 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
             converged = false;
             break;
         }
+        //std::cout <<max <<" " <<eps <<std::endl;
     }
     eigenvalues = A.diag();
     arma::uvec sidx = sort_index(eigenvalues);
