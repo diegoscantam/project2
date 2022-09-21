@@ -49,6 +49,12 @@ add_executable(p3
 target_link_libraries(p3 PUBLIC trace)
 target_compile_features(p3 PUBLIC cxx_std_11)
 
+add_executable(p5
+	problem5.cpp
+)
+target_link_libraries(p5 PUBLIC trace)
+target_compile_features(p5 PUBLIC cxx_std_11)
+
 
 # --- TESTS ---
 add_executable(tridiag-test

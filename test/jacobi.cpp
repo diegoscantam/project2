@@ -35,7 +35,7 @@ void test_jacobi_eigensolver(){
     arma::mat eigenvectors=arma::mat(3,3);
     
     
-    int maxiter = 100, iterations;
+    long int maxiter = 100, iterations;
     bool converged;
     
     jacobi_eigensolver(A, eps,eigenvalues, eigenvectors, maxiter, iterations, converged);
