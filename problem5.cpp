@@ -22,7 +22,7 @@ int main(){
     double eps = 1e-8, mean;
 
     // Create and open the output file
-    std::string filename0 = "data/iter.txt";
+    std::string filename0 = "iter.txt";
     std::ofstream ofile0;
     ofile0.open(filename0);
 
