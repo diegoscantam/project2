@@ -62,7 +62,6 @@ void test_NxN(int N){
     bool converged;
     jacobi_eigensolver(obs_A, eps, obs_eigval, obs_eigvec, maxiter, iterations, converged);
 
-
     for (int i = 0; i < N; i++){
         assert(are_equal(obs_eigval(i), exp_eigval(i), 1e-3));
         for (int j = 0; j < N; j++){

@@ -187,20 +187,36 @@ double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
 
   k=0; //row
   l=1; //col
-  double max = *(a+l*N+k);
 
-  for (int q=2; q < N*N; q++){
-    double i = q%N, j = q/N; // arma::mat is col-ordered
-    if( i < j  ){
+  //assign first  element in position k=0, l=1 ergo *(a+l*N+k)
+  double max = *(a+N);
+
+  for (int q=N-1; q < N*N-1; q++) {
+    double j = q/N;
+    if( q < j*(1+N) ){
       double x = *(a+q);
-      if( x*x > max*max ){
-        k = i;
+      if( x*x > max*max ) {
+        k = q-j*N;
         l = j;
         max = x;
       }
     }
   }
 
+
+/*
+  for (int q=2; q < N*N; q++) {
+    double j = q/N, i = q%N;
+    if( i < j ){
+      double x = *(a+q);
+      if( x*x > max*max ) {
+        k = i;
+        l = j;
+        max = x;
+      }
+    }
+  }
+*/
   return std::abs(max);
 }
 
@@ -212,9 +228,6 @@ double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 {
   int N = A.n_rows;
-
-  //assert(A.is_square());
-  //assert(N > 1);
 
   k=0;
   l=1;
@@ -232,6 +245,31 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
   }
 
   return std::abs(maxval);
+}
+
+// A function that finds the max off-diag element of a symmetric matrix A.
+// - The matrix indices of the max element are returned by writing to the  
+//   int references k and l (row and column, respectively)
+// - The value of the max element A(k,l) is returned as the function
+//   return value
+double max_offdiag_symmetric(const int N, double* a, int& k, int& l)
+{
+  k=0;
+  l=1;
+  double max = *(a+N);
+
+  for (int i=0; i < N; i++){
+    for (int j = i + 1; j < N; j++){
+      auto a_ij = *(a+j*N+i);
+      if(a_ij*a_ij > max*max){
+        max = a_ij;
+        k = i;
+        l = j;
+      }
+    }
+  }
+
+  return std::abs(max);
 }
 
 // Performs a single Jacobi rotation, to "rotate away"
@@ -309,5 +347,3 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
     eigenvectors = R.cols(sidx);
 
 }
-
-
