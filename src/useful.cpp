@@ -246,30 +246,31 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
   double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l), c, s;
 
   // Determine t, c, s of Jacobi rotation
-  double tau  = (a_ll - a_kk)/(2*a_kl), t;
-  if  (tau >= 0)
-    t = 1./(tau+std::sqrt(1+tau*tau));
+  double tau  = (a_ll - a_kk)/(2.*a_kl), t;
+  if  (tau >= 0.)
+    t = 1./(tau+std::sqrt(1.+tau*tau));
   else
-    t = -1./(-tau+std::sqrt(1+tau*tau));
-  c = 1./std::sqrt(1+t*t);
+    t = -1./(-tau+std::sqrt(1.+tau*tau));
+  c = 1./std::sqrt(1.+t*t);
   s = c*t;
 
   // Update A elements and R  elements
   A(k, k) = a_kk*c*c - 2.*a_kl*c*s + a_ll*s*s;
   A(l, l) = a_ll*c*c + 2.*a_kl*c*s + a_kk*s*s;
-  A(k, l) = 0;
-  A(l, k) = A(k, l);
+  A(k, l) = 0.;
+  A(l, k) = 0.;
   for (int i = 0; i < N; i++){
     double r_ik = R(i, k);
     R(i, k) =r_ik*c - R(i, l)*s;
     R(i, l) = R(i, l)*c + r_ik*s;
-    if (i == k || i == l){
+
+    if (i == k || i == l)
       continue;
-    }
     double a_ik = A(i, k);
     A(i, k) = a_ik*c - A(i, l)*s;
     A(k, i) = A(i, k);
     A(i, l) = A(i, l)*c + a_ik*s;
+    A(l, i) = A(i, l);
   }
 
 }
@@ -301,7 +302,6 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
             converged = false;
             break;
         }
-        //std::cout <<max <<" " <<eps <<std::endl;
     }
     eigenvalues = A.diag();
     arma::uvec sidx = sort_index(eigenvalues);

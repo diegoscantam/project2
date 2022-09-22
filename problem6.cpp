@@ -11,13 +11,13 @@
 
 int main(){
 
-    int n = 10; //n steps
+    int n = 100; //n steps
     double x_min=0.;
     double x_max=1.;
     double v_0=0.;
     double v_n=0.;
-    int width=30;
-    int prec=10;
+    int width=12;
+    int prec=12;
     double h = (x_max - x_min) / n;
 
     arma::vec x(n+1), v1(n+1), v2(n+1), v3(n+1);
@@ -31,9 +31,12 @@ int main(){
 
     arma::vec eigvals(n-1);
     arma::mat eigvecs(n-1, n-1);
-    long maxiter = 1e3, iterations;
+    long maxiter = 1e5, iterations;
     bool converged;
-    jacobi_eigensolver(A, 1.e-8, eigvals, eigvecs, maxiter, iterations, converged);
+    jacobi_eigensolver(A, 1.e-10, eigvals, eigvecs, maxiter, iterations, converged);
+
+    if (!converged)
+        std::cout <<"WARNING: The algorithm did not converge!" <<std::endl;
 
     v1(0) = v_0;
     v2(0) = v_0;
@@ -47,16 +50,20 @@ int main(){
     v2(n) = v_0;
     v3(n) = v_0;
 
-    std::string filename = "data6.txt";
+    std::string filename = "data_"+std::to_string(n)+".txt";
     std::ofstream ofile;
     ofile.open(filename);
 
+    ofile <<"x v1 v2 v3" <<std::endl;
+
     for (int i = 0; i < n+1; i++){
-        ofile << scientific_format(x(i), width, prec) << scientific_format(v1(i), width, prec ) << scientific_format(v2(i), width, prec ) << scientific_format(v3(i), width, prec )<<  std::endl;
+        ofile   << scientific_format(x(i), width, prec) <<" " 
+                << scientific_format(v1(i), width, prec ) <<" "
+                << scientific_format(v2(i), width, prec ) <<" "
+                << scientific_format(v3(i), width, prec )<<  std::endl;
     }
 
     ofile.close();
-
 
     return 0;
 }
