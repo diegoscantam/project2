@@ -152,58 +152,6 @@ arma::mat create_symmetric_tridiagonal(int n, double a, double d)
   return create_tridiagonal(n, a, d, a);
 }
 
-
-// Determine the max off-diagonal element of a symmetric matrix A with fast algorithm
-// - Saves the matrix element indicies to k and l 
-// - Returns absolute value of A(k,l) as the function return value
-double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
-  double max = 0, x=max;
-  int N = A.n_rows;
-
-  //assert(A.is_square());
-  //assert(N > 1);
-
-  k=0;
-  l=1;
-  for(int q = 2; q <= N*(N-1); q++){
-    if( (q-1)%N +1 > (q-1)/N  +1  ){
-      x = std::abs(A((q-1)/N , (q-1)% N ));
-      if( x > max ){
-        k = (q-1)/N;
-        l = (q-1)%N;
-        max = x;
-      }   
-    }
-  }
-
-  return std::abs(max);
-}
-
-// Determine the max off-diagonal element of a symmetric matrix A with fast algorithm given access to matrix pointer
-// double *a = arma::mat A.memptr();
-// - Saves the matrix element indicies to k and l 
-// - Returns absolute value of A(k,l) as the function return value
-double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
-
-  k=0; //row
-  l=1; //col
-  double max = *(a+l*N+k);
-
-  for (int q=2; q < N*N; q++){
-    double i = q%N, j = q/N; // arma::mat is col-ordered
-    if( i < j  ){
-      double x = *(a+q);
-      if( x*x > max*max ){
-        k = i;
-        l = j;
-        max = x;
-      }
-    }
-  }
-
-  return std::abs(max);
-}
-
 // A function that finds the max off-diag element of a symmetric matrix A.
 // - The matrix indices of the max element are returned by writing to the  
 //   int references k and l (row and column, respectively)
@@ -212,9 +160,6 @@ double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 {
   int N = A.n_rows;
-
-  //assert(A.is_square());
-  //assert(N > 1);
 
   k=0;
   l=1;
@@ -233,6 +178,32 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 
   return std::abs(maxval);
 }
+
+// A function that finds the max off-diag element of a symmetric matrix A.
+// - The matrix indices of the max element are returned by writing to the  
+//   int references k and l (row and column, respectively)
+// - The value of the max element A(k,l) is returned as the function
+//   return value
+double max_offdiag_symmetric(const int N, double* a, int& k, int& l)
+{
+  k=0;
+  l=1;
+  double max = *(a+N);
+
+  for (int i=0; i < N; i++){
+    for (int j = i + 1; j < N; j++){
+      auto a_ij = *(a+j*N+i);
+      if(a_ij*a_ij > max*max){
+        max = a_ij;
+        k = i;
+        l = j;
+      }
+    }
+  }
+
+  return std::abs(max);
+}
+
 
 // Performs a single Jacobi rotation, to "rotate away"
 // the off-diagonal element at A(k,l).
