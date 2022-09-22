@@ -10,6 +10,10 @@
 #include <armadillo>
 #include "useful.hpp"
 
+template <typename T> bool are_equal(const T a, const T b, const T epsilon = 1e-8) {
+	return std::abs(a-b) < epsilon;
+}
+
 // return a string in scientific notation
 std::string scientific_format(double d, const int& width, const int& prec){
 
@@ -183,20 +187,36 @@ double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
 
   k=0; //row
   l=1; //col
-  double max = *(a+l*N+k);
 
-  for (int q=2; q < N*N; q++){
-    double i = q%N, j = q/N; // arma::mat is col-ordered
-    if( i < j  ){
+  //assign first  element in position k=0, l=1 ergo *(a+l*N+k)
+  double max = *(a+N);
+
+  for (int q=N-1; q < N*N-1; q++) {
+    double j = q/N;
+    if( q < j*(1+N) ){
       double x = *(a+q);
-      if( x*x > max*max ){
-        k = i;
+      if( x*x > max*max ) {
+        k = q-j*N;
         l = j;
         max = x;
       }
     }
   }
 
+
+/*
+  for (int q=2; q < N*N; q++) {
+    double j = q/N, i = q%N;
+    if( i < j ){
+      double x = *(a+q);
+      if( x*x > max*max ) {
+        k = i;
+        l = j;
+        max = x;
+      }
+    }
+  }
+*/
   return std::abs(max);
 }
 
@@ -208,9 +228,6 @@ double fast_max_offdiag_symmetric(const int N, double* a, int& k, int& l){
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 {
   int N = A.n_rows;
-
-  //assert(A.is_square());
-  //assert(N > 1);
 
   k=0;
   l=1;
@@ -230,6 +247,31 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
   return std::abs(maxval);
 }
 
+// A function that finds the max off-diag element of a symmetric matrix A.
+// - The matrix indices of the max element are returned by writing to the  
+//   int references k and l (row and column, respectively)
+// - The value of the max element A(k,l) is returned as the function
+//   return value
+double max_offdiag_symmetric(const int N, double* a, int& k, int& l)
+{
+  k=0;
+  l=1;
+  double max = *(a+N);
+
+  for (int i=0; i < N; i++){
+    for (int j = i + 1; j < N; j++){
+      auto a_ij = *(a+j*N+i);
+      if(a_ij*a_ij > max*max){
+        max = a_ij;
+        k = i;
+        l = j;
+      }
+    }
+  }
+
+  return std::abs(max);
+}
+
 // Performs a single Jacobi rotation, to "rotate away"
 // the off-diagonal element at A(k,l).
 // - Assumes symmetric matrix, so we only consider k < l
@@ -237,36 +279,36 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l)
 void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 
   int N = A.n_rows;
-    
 
   // save in mem the matrix elements
-  double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l);
+  double a_kk = A(k,k), a_ll = A(l,l), a_kl = A(k, l), c, s;
 
   // Determine t, c, s of Jacobi rotation
-  double tau  = (a_ll - a_kk)/(2*a_kl);
-  double t = 1;
-  if  (tau > 0)
-    t = 1/(tau+std::sqrt(1+tau*tau));
+  double tau  = (a_ll - a_kk)/(2.*a_kl), t;
+  if  (tau >= 0.)
+    t = 1./(tau+std::sqrt(1.+tau*tau));
   else
-    t = -1/(-tau+std::sqrt(1+tau*tau));
-
-  double c = 1/std::sqrt(1+t*t), s = c*t;
+    t = -1./(-tau+std::sqrt(1.+tau*tau));
+  c = 1./std::sqrt(1.+t*t);
+  s = c*t;
 
   // Update A elements and R  elements
   A(k, k) = a_kk*c*c - 2.*a_kl*c*s + a_ll*s*s;
   A(l, l) = a_ll*c*c + 2.*a_kl*c*s + a_kk*s*s;
-  A(k, l) = 0;
-  A(l, k) = A(k, l);
+  A(k, l) = 0.;
+  A(l, k) = 0.;
   for (int i = 0; i < N; i++){
+    double r_ik = R(i, k);
+    R(i, k) =r_ik*c - R(i, l)*s;
+    R(i, l) = R(i, l)*c + r_ik*s;
 
+    if (i == k || i == l)
+      continue;
     double a_ik = A(i, k);
     A(i, k) = a_ik*c - A(i, l)*s;
     A(k, i) = A(i, k);
     A(i, l) = A(i, l)*c + a_ik*s;
-
-    double r_ik = R(i, k);
-    R(i, k) =r_ik*c - R(i, l)*s;
-    R(i, l) = R(i, l)*c + r_ik*s;
+    A(l, i) = A(i, l);
   }
 
 }
@@ -279,46 +321,29 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 // - Stops if it the number of iterations reaches "maxiter"
 // - Writes the number of iterations to the integer "iterations"
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
-void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const int maxiter, int& iterations, bool& converged){
-    
-    //
+void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const long int maxiter, long int& iterations, bool& converged){
+    iterations = 0;
+
     //initialize matrix R1
     int N = A.n_rows;
-    arma::mat R=arma::eye(N,N);
+    arma::mat R = arma::eye(N,N);
     int k,l;
-    //int& iterations=0;
-    //const int maxiter=1.e5;
-    //bool& converged;
+
     double max = max_offdiag_symmetric(A,k,l);
-    
-    
-    
+    converged = true;
     while (max > eps){
         jacobi_rotate(A,R,k,l);
-        max=max_offdiag_symmetric(A,k,l);
-        iterations=iterations+1;
+        max = max_offdiag_symmetric(A,k,l);
+        iterations++;
         
         if (iterations > maxiter){
             converged = false;
             break;
         }
-        else {
-            converged = true;
-        }
     }
-    
-    std::cout<<"\n"<<iterations;
-    
-    for (int i= 0; i<N; i++){
-        eigenvalues(i)=A(i,i);
-        std::cout<< "\n"<<eigenvalues(i)<<std::endl;
-    }
-    
-    for (int i=0; i < N; i++){
-        for(int j=0; j<N; j++){
-            eigenvectors(i,j)=R(i,j);
-        }
-    }
+    eigenvalues = A.diag();
+    arma::uvec sidx = sort_index(eigenvalues);
+    eigenvalues = eigenvalues(sidx);
+    eigenvectors = R.cols(sidx);
+
 }
-
-

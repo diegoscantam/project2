@@ -1,4 +1,3 @@
-
 // include guard
 #ifndef __useful_hpp__  
 #define __useful_hpp__
@@ -44,6 +43,7 @@ arma::mat create_symmetric_tridiagonal(int n, double a, double d);
 // - Saves the matrix element indicies to k and l 
 // - Returns absolute value of A(k,l) as the function return value
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
+double max_offdiag_symmetric(const int N, double* a, int& k, int& l);
 double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
 double fast_max_offdiag_symmetric(const int N, double* A, int& k, int& l);
 
@@ -61,6 +61,6 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l);
 // - Stops if it the number of iterations reaches "maxiter"
 // - Writes the number of iterations to the integer "iterations"
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
-void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const int maxiter, int& iterations, bool& converged);
+void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, const long int maxiter, long int& iterations, bool& converged);
 
 #endif  // end of include guard __useful_hpp__
