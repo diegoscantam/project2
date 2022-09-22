@@ -36,11 +36,11 @@ int main(){
 
         for (int i = 0; i < n_runs; i++){
             auto t1_slow = std::chrono::high_resolution_clock::now();
-            temp = max_offdiag_symmetric(A, k, l);
+            temp = max_offdiag_symmetric(N, a, k, l);
             auto t2_slow = std::chrono::high_resolution_clock::now();
 
             auto t1_fast = std::chrono::high_resolution_clock::now();
-            temp = fast_max_offdiag_symmetric(A, k, l);
+            temp = fast_max_offdiag_symmetric(N, a, k, l);
             auto t2_fast = std::chrono::high_resolution_clock::now();
 
             time_slow[i] = std::chrono::duration<double>(t2_slow - t1_slow).count();
