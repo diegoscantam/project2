@@ -35,19 +35,31 @@ add_executable(chrono
 	timing.cpp
 )
 target_link_libraries(chrono PUBLIC trace)
-target_compile_features(chrono PUBLIC cxx_std_11)
+#target_compile_features(chrono PUBLIC cxx_std_11)
 
 add_executable(p2
 	problem2.cpp
 )
 target_link_libraries(p2 PUBLIC trace)
-target_compile_features(p2 PUBLIC cxx_std_11)
+#target_compile_features(p2 PUBLIC cxx_std_11)
 
 add_executable(p3
 	problem3.cpp
 )
 target_link_libraries(p3 PUBLIC trace)
-target_compile_features(p3 PUBLIC cxx_std_11)
+#target_compile_features(p3 PUBLIC cxx_std_11)
+
+add_executable(p6
+	problem6.cpp
+)
+target_link_libraries(p6 PUBLIC trace)
+#target_compile_features(p6 PUBLIC cxx_std_11)
+
+add_executable(p5
+	problem5.cpp
+)
+target_link_libraries(p5 PUBLIC trace)
+target_compile_features(p5 PUBLIC cxx_std_11)
 
 
 # --- TESTS ---
