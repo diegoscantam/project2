@@ -11,7 +11,7 @@
 #include "useful.hpp"
 
 template <typename T> bool are_equal(const T a, const T b, const T epsilon = 1e-8) {
-	return std::abs(a-b) < epsilon;
+	return std::abs(a) - std::abs(b) < epsilon;
 }
 
 // return a string in scientific notation
@@ -261,8 +261,9 @@ void jacobi_eigensolver(arma::mat& A, double eps, arma::vec& eigenvalues, arma::
     int N = A.n_rows;
     arma::mat R = arma::eye(N,N);
     int k,l;
+    double *a = A.memptr();
 
-    double max = max_offdiag_symmetric(A,k,l);
+    double max = max_offdiag_symmetric(N,a,k,l);
     converged = true;
     while (max > eps){
         jacobi_rotate(A,R,k,l);

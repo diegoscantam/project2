@@ -44,8 +44,7 @@ arma::mat create_symmetric_tridiagonal(int n, double a, double d);
 // - Saves the matrix element indicies to k and l 
 // - Returns absolute value of A(k,l) as the function return value
 double max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
-double fast_max_offdiag_symmetric(const arma::mat& A, int& k, int& l);
-double fast_max_offdiag_symmetric(const int N, double* A, int& k, int& l);
+double max_offdiag_symmetric(const int N, double* a, int& k, int& l);
 
 // Performs a single Jacobi rotation, to "rotate away"
 // the off-diagonal element at A(k,l).

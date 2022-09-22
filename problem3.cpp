@@ -20,8 +20,10 @@ int main(){
     A(1,N-2) = -0.7;
     A(N-2,1) = A(1,N-2);
 
+    double* a = A.memptr();
+
     // call function and print A
-    double max_off = fast_max_offdiag_symmetric(A, k, l);
+    double max_off = max_offdiag_symmetric(N, a, k, l);
 
     std::cout << "The matrix A is given by:" << std::endl;
     A.print();

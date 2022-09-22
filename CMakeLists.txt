@@ -31,12 +31,6 @@ target_include_directories (trace PUBLIC
 	)
 
 # --- EXECUTABLES ---
-add_executable(chrono
-	timing.cpp
-)
-target_link_libraries(chrono PUBLIC trace)
-#target_compile_features(chrono PUBLIC cxx_std_11)
-
 add_executable(p2
 	problem2.cpp
 )
